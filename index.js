@@ -1,20 +1,33 @@
 const { ApolloServer } = require("apollo-server");
-
 const mongoose = require("mongoose");
-
 const gql = require("graphql-tag");
+
+const Post = require("./models/Post");
 
 const { MONGODB } = require("./config.js");
 
 const typeDefs = gql`
+  type Post {
+    id: ID!
+    body: String!
+    createdAt: String!
+    username: String!
+  }
   type Query {
-    sayHi: String!
+    getPosts: [Post]
   }
 `;
 
 const resolvers = {
   Query: {
-    sayHi: () => "Hello world GRAPTHQL",
+    async getPosts() {
+      try {
+        const post = await Post.find();
+        return post;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
   },
 };
 
